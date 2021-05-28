@@ -1,5 +1,5 @@
 #command_helper
-
+# coding:utf-8
 
 def question
     puts <<-EOS
@@ -13,7 +13,7 @@ def partition
 end
 
 ##初期設定##
-filename1 = "wordlist.csv"
+filename = "wordlist.csv"
 #filename2 = "wordlist.txt"
 result = "result.log"
 score = 0
@@ -67,16 +67,44 @@ when 1 #単語追加モード
 
     partition
     puts <<-EOS
-    コマンドを追加するモードです.
-    ここで追加したコマンドは練習モードに反映されます.
+***単語追加モード***
+
+ここで辞書に追加したコマンドは、練習モードに反映されます.
+
     EOS
     partition
 
-    puts ""
+    puts "新しいコマンドを追加する前に、辞書に登録されているコマンド一覧を確認しますか？"
+    question
+    input = gets.to_i
+    if input = 1
+        #ファイル読み込み 
+        File.open(filename,"r") do |f|
+            f.gets #読み込みファイル一行目読み飛ばし
+            f.each_line do |line|
+                line.chomp!
+                c = line.split(",") # ，で区切る
+                words[c[0]] = c[1] #ハッシュ追加
+            end
+        end
+
+        partition
+        #コマンド一覧
+        words.each do |key, value|
+            puts ""
+            puts key + "：" + value
+        end
+        puts
+        partition
+    end
+ 
+    puts "では、新しいコマンドを辞書に登録します."
     while true
-        puts ""
+        
+        sleep 1
         puts "例のように入力してください.　(例)cd,ディレクトリ（フォルダ）を移動する."
         input_word = gets
+        
         puts <<-EOS
 
         これで追加しますか？
@@ -89,14 +117,18 @@ when 1 #単語追加モード
             File.open(filename,"a") do |fo|
                 fo.puts "#{input_word}"
             end
-        else
-            puts ""
+        
+            puts
             puts "もう一度追加しますか？"
             question
             input2 = gets.to_i
+            partition
+
             if input2 == 2
+                puts "プログラムを終了します."
                 break
             end
+
         end
     end
 
@@ -147,6 +179,7 @@ end
 
 
 ##ターミナル上で単語を追加##
+=begin
 puts ""
 puts "単語リストに単語を追加しますか？"
 question
@@ -292,3 +325,5 @@ File.open(result,"a") do |fo|
     end
     fo.puts "----------------------------------------------"
 end
+
+=end
