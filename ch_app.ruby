@@ -17,7 +17,8 @@ filename = "wordlist.csv"
 #filename2 = "wordlist.txt"
 result = "result.log"
 score = 0
-words = {}
+words = {} #ハッシュ
+wordlists = [] #配列
 miss = {}
 #modes = ["入門(日本語→英語)","中級(日本語→英語)","入門(英語→日本語)","中級(英語→日本語)"] 
 modes = ["単語追加モード", "練習モード"]
@@ -41,9 +42,16 @@ while true
     
     if mode == 1 || mode == 2
         puts 
-        puts "「#{modes[mode-1]}」でいいですか？"
-        question
-        confirm  = gets.to_i
+        while true
+            puts "「#{modes[mode-1]}」でいいですか？"
+            question
+            confirm  = gets.to_i
+            if confirm == 1 ||confirm == 2
+                break
+            else
+                puts "正しい数字を入力してください（半角数字を入力）"
+            end
+        end
         if confirm == 2
             mode = 0
         end
@@ -54,7 +62,7 @@ while true
         break
     end
 
-    puts "もう一度モードを選択してください（半角数字を入力）"
+    puts "正しいモードを選択してください（半角数字を入力）"
 
 end
 puts ""
@@ -77,7 +85,7 @@ when 1 #単語追加モード
     puts "新しいコマンドを追加する前に、辞書に登録されているコマンド一覧を確認しますか？"
     question
     input = gets.to_i
-    if input = 1
+    if input == 1
         #ファイル読み込み 
         File.open(filename,"r") do |f|
             f.gets #読み込みファイル一行目読み飛ばし
@@ -85,6 +93,7 @@ when 1 #単語追加モード
                 line.chomp!
                 c = line.split(",") # ，で区切る
                 words[c[0]] = c[1] #ハッシュ追加
+                wordlist
             end
         end
 
@@ -147,10 +156,17 @@ when 2
         mode = gets.to_i
 
         if mode == 1 || mode == 2
-            puts 
-            puts "「#{practice_modes[mode-1]}」でいいですか？"
-            question
-            confirm  = gets.to_i
+            while true
+                puts 
+                puts "「#{practice_modes[mode-1]}」でいいですか？"
+                question
+                confirm  = gets.to_i
+                if confirm == 1 || confirm == 2
+                    break
+                else
+                    puts "正しい数字を入力してください（半角数字を入力）"
+                end
+            end
             if confirm == 2
                 mode = 0
             end
@@ -167,8 +183,82 @@ when 2
 
     case mode
     when 1 #タイピング練習
-        
+        partition
+        puts <<-EOS
+***タイピング練習***
+    
+表示されるコマンド名を入力し、Enterキーを押すと次の問題に移ります.
+間違えていたらもう一度入力しなおしです.
+    
+        EOS
+        partition
 
+        #ファイル読み込み 
+        File.open(filename,"r") do |f|
+            f.gets #読み込みファイル一行目読み飛ばし
+            f.each_line do |line|
+                line.chomp!
+                c = line.split(",") # ，で区切る
+                #words[c[0]] = c[1] #ハッシュ追加
+                wordlists.push(c[0])
+            end
+        end
+
+        while true
+
+            puts "問題は最大#{wordlists.size}問解けます. 何問解きますか？（半角数字を入力）"
+            number = gets.chomp
+            words = wordlists.sample(number.to_i)
+            
+            partition
+            puts "問題は全部で#{words.size}問です."
+
+            partition
+
+            start_time = Time.now # 開始時間
+            #コマンド一覧
+            words.each do |key, value|
+                loop do
+                    puts key
+                    if key == gets.chomp!
+                    score += 10
+                    break
+                    else
+                    puts "もう一度"
+                    score -= 10
+                    end
+                end
+            end
+            puts
+            partition
+            end_time = Time.now # 終了時刻
+
+            ## 結果の表示
+            time = end_time - start_time
+            puts <<-EOS
+スコア：#{score}/#{words.size * 10 }点
+タイム：#{time.round(1)} 秒
+問題数：#{words.length}問
+            EOS
+
+            while true
+                partition
+                puts 
+                puts "もう一度プレイしますか？（半角数字を入力）"
+                question
+                replay = gets.to_i
+
+                if replay == 1 || replay == 2
+                    break
+                end
+                puts "正しい数字を入力してください."
+            end
+
+            if replay == 2
+                puts "では、プログラムを終了します. お疲れ様でした！"
+                break
+            end
+        end
     when 2 #テストモード
     
     end
