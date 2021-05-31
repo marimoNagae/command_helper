@@ -12,6 +12,14 @@ def partition
     puts "-" * 50
 end
 
+def countdown #カウントダウン
+    3.downto(1) do |count|
+        print count.to_s + "　"
+        sleep 1
+    end
+end
+
+
 ##初期設定##
 filename = "wordlist.csv"
 #filename2 = "wordlist.txt"
@@ -112,7 +120,7 @@ when 1 #単語追加モード
         
         sleep 1
         puts "例のように入力してください.　(例)cd,ディレクトリ（フォルダ）を移動する."
-        input_word = gets
+        input_word = gets.chomp
         
         puts <<-EOS
 
@@ -164,6 +172,7 @@ when 2
                 if confirm == 1 || confirm == 2
                     break
                 else
+                    partition
                     puts "正しい数字を入力してください（半角数字を入力）"
                 end
             end
@@ -205,14 +214,26 @@ when 2
         end
 
         while true
-
-            puts "問題は最大#{wordlists.size}問解けます. 何問解きますか？（半角数字を入力）"
-            number = gets.chomp
-            words = wordlists.sample(number.to_i)
+            score = 0
+            while true
+                puts "問題は最大#{wordlists.size}問解けます. 何問解きますか？（半角数字を入力）"
+                number = gets.to_i
+                if number <= wordlists.size
+                    break
+                else
+                    partition
+                    puts "正しい数字を入力してください（半角数字を入力）"
+                end
+            end
+            words = wordlists.sample(number)
             
             partition
             puts "問題は全部で#{words.size}問です."
 
+            partition
+            countdown
+            puts
+            puts "------START------"
             partition
 
             start_time = Time.now # 開始時間
@@ -259,10 +280,119 @@ when 2
                 break
             end
         end
-    when 2 #テストモード
-    
-    end
 
+
+    when 2 #テストモード
+        partition
+        puts <<-EOS
+***テストモード***
+    
+コマンドの説明文が表示されるので、正しいと思うコマンドを入力し、Enterキーを押してください.
+    
+        EOS
+        partition
+        #ファイル読み込み 
+        File.open(filename,"r") do |f|
+            f.gets #読み込みファイル一行目読み飛ばし
+            f.each_line do |line|
+                line.chomp!
+                c = line.split(",") # ，で区切る
+                words[c[0]] = c[1] #ハッシュ追加
+            end
+        end
+        words = words.invert #ハッシュの値とキーを入れ替える
+        while true
+
+            while true
+                puts "問題は最大#{words.size}問解けます. 何問解きますか？（半角数字を入力）"
+                number = gets.to_i
+                if number <= words.size
+                    break
+                else
+                    partition
+                    puts "正しい数字を入力してください（半角数字を入力）"
+                end
+            end
+            words = words.sort_by{rand}
+                
+            partition
+            puts "問題は全部で#{number}問です."
+            countdown
+            puts
+            puts "------START------"
+
+            #開始時間
+            start_time = Time.now 
+
+            qcount = 0
+            #出題
+            words.each do |key, value|
+                puts key
+                print ">"
+                if value == gets.chomp
+                    score += 100/words.length
+                else
+                    puts "正しくは#{value}です."
+                    miss[key] = value
+                end
+                
+                qcount += 1
+                if qcount < number
+                    puts "----------"
+                else
+                    break
+                end
+            end
+
+            #終了時刻
+            end_time = Time.now 
+            #タイム
+            time = end_time - start_time 
+
+            if miss.empty?
+                score = 100
+            end
+
+            #結果表示(timeにround関数を使用。四捨五入少数第一位）
+            puts <<-EOS
+
+* 結果 *
+タイム：#{time.round(1)}秒 
+スコア：#{score}点
+あなたが間違えた単語
+
+            EOS
+            #間違えた単語の表示
+            if miss.empty? 
+                puts "-> ありません. Perfect!"
+            else
+                miss.each do |key, value|
+                    puts "#{key}: #{value}"
+                end
+            end 
+            
+
+            while true
+                partition
+                puts "もう一度プレイしますか？（半角数字を入力）"
+                question
+                replay = gets.to_i
+
+                if replay == 1 || replay == 2
+                    break
+                end
+                partition
+                puts "正しい数字を入力してください."
+            end
+
+            if replay == 2
+                puts "では、プログラムを終了します. お疲れ様でした！"
+                break
+            end
+
+        end
+
+    end
 
 end
 
