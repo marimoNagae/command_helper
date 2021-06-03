@@ -1,5 +1,4 @@
-#command_helper
-# coding:utf-8
+#command_helper app body
 
 def question
     puts <<-EOS
@@ -12,7 +11,7 @@ def partition
     puts "-" * 50
 end
 
-def countdown #カウントダウン
+def countdown 
     3.downto(1) do |count|
         print count.to_s + "　"
         sleep 1
@@ -22,17 +21,15 @@ end
 
 ##初期設定##
 filename = "wordlist.csv"
-#filename2 = "wordlist.txt"
 result1 = "result1.log" #タイピング
 result2 = "result2.log" #テスト
 
-words = {} #ハッシュ
-wordlists = [] #配列
+words = {} 
+wordlists = [] 
 
-#modes = ["入門(日本語→英語)","中級(日本語→英語)","入門(英語→日本語)","中級(英語→日本語)"] 
+
 modes = ["コマンド追加モード", "練習モード"]
-#dictionary_modes = ["コマンド検索","辞書に単語を追加"]
-practice_modes = ["タイピング", "テスト"]
+practice_modes = ["タイピングモード", "テストモード"]
 
 #opening
 partition
@@ -95,11 +92,11 @@ sleep 1
 
 
 case mode
-when 1 #単語追加モード
+when 1 #コマンド追加モード
 
     partition
     puts <<-EOS
-***単語追加モード***
+***コマンド追加モード***
 
 ここで辞書に追加したコマンドは、練習モードに反映されます.
 
@@ -121,12 +118,11 @@ when 1 #単語追加モード
     if input == 1
         #ファイル読み込み 
         File.open(filename,"r") do |f|
-            f.gets #読み込みファイル一行目読み飛ばし
+            f.gets 
             f.each_line do |line|
                 line.chomp!
-                c = line.split(",") # ，で区切る
+                c = line.split(",") 
                 words[c[0]] = c[1] #ハッシュ追加
-                #wordlist
             end
         end
 
@@ -196,13 +192,13 @@ when 1 #単語追加モード
 
 
 
-when 2
+when 2 #練習モード
     partition
     puts <<-EOS
 ***練習モード***
 
-1.タイピング　＞ コマンドのタイピング練習です.
-2.テスト　　　＞ コマンドの説明文を見て、説明に合うコマンドを入力してください.
+1.タイピングモード　＞ コマンドのタイピング練習です.
+2.テストモード　　　＞ コマンドの説明文を見て、説明に合うコマンドを入力してください.
 
     EOS
     partition
@@ -244,10 +240,10 @@ when 2
     end
 
     case mode
-    when 1 #タイピング練習
+    when 1 #タイピングモード
         partition
         puts <<-EOS
-***タイピング練習***
+***タイピングモード***
     
 表示されるコマンド名を入力し、Enterキーを押すと次の問題に移ります.
 間違えていたらもう一度入力しなおしです.
