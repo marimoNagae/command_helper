@@ -23,19 +23,33 @@ end
 ##初期設定##
 filename = "wordlist.csv"
 #filename2 = "wordlist.txt"
-result = "result.log"
-score = 0
+result1 = "result1.log" #タイピング
+result2 = "result2.log" #テスト
+
 words = {} #ハッシュ
 wordlists = [] #配列
-miss = {}
+
 #modes = ["入門(日本語→英語)","中級(日本語→英語)","入門(英語→日本語)","中級(英語→日本語)"] 
-modes = ["単語追加モード", "練習モード"]
+modes = ["コマンド追加モード", "練習モード"]
 #dictionary_modes = ["コマンド検索","辞書に単語を追加"]
-practice_modes = ["タイピング練習", "テストモード"]
+practice_modes = ["タイピング", "テスト"]
 
+#opening
+partition
+puts "command helperへようこそ."
+sleep 1
+partition
+puts <<-EOS
 
+command helperは、Linuxで使われるコマンドの学習ツールです.
+1.コマンド追加モード　では、辞書にコマンドを追加することができます.
+2.練習モード　　　　　では、辞書に登録されたコマンドのタイピング練習・テストができます.
+
+EOS
 
 ##モード選択##
+partition
+sleep 1
 puts "モードを選択してください（半角数字を入力）"
 
 while true
@@ -51,12 +65,14 @@ while true
     if mode == 1 || mode == 2
         puts 
         while true
+            partition
             puts "「#{modes[mode-1]}」でいいですか？"
             question
             confirm  = gets.to_i
             if confirm == 1 ||confirm == 2
                 break
             else
+                partition
                 puts "正しい数字を入力してください（半角数字を入力）"
             end
         end
@@ -69,11 +85,11 @@ while true
     when 1,2
         break
     end
-
+    partition
     puts "正しいモードを選択してください（半角数字を入力）"
 
 end
-puts ""
+partition
 puts "#{modes[mode-1]}を選択しました."
 sleep 1
 
@@ -88,11 +104,20 @@ when 1 #単語追加モード
 ここで辞書に追加したコマンドは、練習モードに反映されます.
 
     EOS
-    partition
+    while true
+        partition
+        puts "新しいコマンドを追加する前に、辞書に登録されているコマンド一覧を確認しますか？"
+        question
+        input = gets.to_i
+        if input == 1 || input == 2
+            break
+        else
+            partition
+            puts "正しい数字を入力してください（半角数字を入力）"
+        end
+    end
 
-    puts "新しいコマンドを追加する前に、辞書に登録されているコマンド一覧を確認しますか？"
-    question
-    input = gets.to_i
+
     if input == 1
         #ファイル読み込み 
         File.open(filename,"r") do |f|
@@ -101,7 +126,7 @@ when 1 #単語追加モード
                 line.chomp!
                 c = line.split(",") # ，で区切る
                 words[c[0]] = c[1] #ハッシュ追加
-                wordlist
+                #wordlist
             end
         end
 
@@ -112,37 +137,57 @@ when 1 #単語追加モード
             puts key + "：" + value
         end
         puts
-        partition
+        puts "確認出来たらEnterキーを押してください."
+        stay = gets
     end
- 
+    partition
     puts "では、新しいコマンドを辞書に登録します."
+    puts
     while true
         
         sleep 1
         puts "例のように入力してください.　(例)cd,ディレクトリ（フォルダ）を移動する."
         input_word = gets.chomp
         
-        puts <<-EOS
+        while true
+            partition
+            puts <<-EOS
 
-        これで追加しますか？
-        #{input_word}
+これで追加しますか？
+#{input_word}
 
-        EOS
-        question
-        add = gets.to_i
+            EOS
+            question
+            add = gets.to_i
+            if add == 1 || add == 2
+                break
+            else
+                partition
+                puts "正しい数字を入力してください（半角数字を入力）"
+            end
+        end
         if add == 1
             File.open(filename,"a") do |fo|
                 fo.puts "#{input_word}"
             end
-        
-            puts
-            puts "もう一度追加しますか？"
-            question
-            input2 = gets.to_i
+            
+            while true
+                partition
+                puts
+                puts "もう一度追加しますか？"
+                question
+                input2 = gets.to_i
+                if input2 == 1 || input2 == 2
+                    break
+                else
+                    partition
+                    puts "正しい数字を入力してください（半角数字を入力）"
+                end
+            end
             partition
 
             if input2 == 2
-                puts "プログラムを終了します."
+                puts "では、プログラムを終了します. お疲れ様でした！"
                 break
             end
 
@@ -152,6 +197,14 @@ when 1 #単語追加モード
 
 
 when 2
+    partition
+    puts <<-EOS
+***練習モード***
+
+1.タイピング　＞ コマンドのタイピング練習です.
+2.テスト　　　＞ コマンドの説明文を見て、説明に合うコマンドを入力してください.
+
+    EOS
     partition
     puts "どちらの機能を使いますか？（半角数字を入力）"
     while true
@@ -165,7 +218,7 @@ when 2
 
         if mode == 1 || mode == 2
             while true
-                puts 
+                partition 
                 puts "「#{practice_modes[mode-1]}」でいいですか？"
                 question
                 confirm  = gets.to_i
@@ -186,7 +239,7 @@ when 2
             break
         end
         partition
-        puts "もう一度モードを選択してください（半角数字を入力）"
+        puts "正しいモードを選択してください（半角数字を入力）"
 
     end
 
@@ -223,6 +276,7 @@ when 2
                 else
                     partition
                     puts "正しい数字を入力してください（半角数字を入力）"
+                    puts
                 end
             end
             words = wordlists.sample(number)
@@ -234,7 +288,6 @@ when 2
             countdown
             puts
             puts "------START------"
-            partition
 
             start_time = Time.now # 開始時間
             #コマンド一覧
@@ -242,11 +295,12 @@ when 2
                 loop do
                     puts key
                     if key == gets.chomp!
-                    score += 10
-                    break
+                        score += 10
+                        partition
+                        break
                     else
-                    puts "もう一度"
-                    score -= 10
+                        puts "もう一度"
+                        score -= 10
                     end
                 end
             end
@@ -256,15 +310,30 @@ when 2
 
             ## 結果の表示
             time = end_time - start_time
+            puts "*** RESULT ***"
+            puts
             puts <<-EOS
 スコア：#{score}/#{words.size * 10 }点
 タイム：#{time.round(1)} 秒
 問題数：#{words.length}問
             EOS
 
+
+            ##結果をファイルに記録##
+            File.open(result1,"a") do |fo|
+                fo.puts <<-EOS
+日時：#{start_time.strftime("%Y年%m月%d日　%H時%M分")}
+モード:タイピング
+問題数：#{words.length}
+時間: #{time.round(1)} 秒
+得点: #{score}/#{words.size * 10}点
+                EOS
+                fo.puts "----------------------------------------------"
+            end
+
+
             while true
-                partition
-                puts 
+                partition 
                 puts "もう一度プレイしますか？（半角数字を入力）"
                 question
                 replay = gets.to_i
@@ -272,10 +341,12 @@ when 2
                 if replay == 1 || replay == 2
                     break
                 end
+                partition
                 puts "正しい数字を入力してください."
             end
 
             if replay == 2
+                partition
                 puts "では、プログラムを終了します. お疲れ様でした！"
                 break
             end
@@ -302,6 +373,8 @@ when 2
         end
         words = words.invert #ハッシュの値とキーを入れ替える
         while true
+            score = 0
+            miss = {}
 
             while true
                 puts "問題は最大#{words.size}問解けます. 何問解きますか？（半角数字を入力）"
@@ -311,6 +384,7 @@ when 2
                 else
                     partition
                     puts "正しい数字を入力してください（半角数字を入力）"
+                    puts
                 end
             end
             words = words.sort_by{rand}
@@ -330,7 +404,7 @@ when 2
                 puts key
                 print ">"
                 if value == gets.chomp
-                    score += 100/words.length
+                    score += 100/number
                 else
                     puts "正しくは#{value}です."
                     miss[key] = value
@@ -352,15 +426,15 @@ when 2
             if miss.empty?
                 score = 100
             end
-
-            #結果表示(timeにround関数を使用。四捨五入少数第一位）
+            partition
+            puts "*** RESULT ***"
+            puts
             puts <<-EOS
-
-* 結果 *
-タイム：#{time.round(1)}秒 
 スコア：#{score}点
-あなたが間違えた単語
+タイム：#{time.round(1)}秒
+問題数：#{number}問
 
+あなたが間違えた単語
             EOS
             #間違えた単語の表示
             if miss.empty? 
@@ -371,6 +445,28 @@ when 2
                 end
             end 
             
+
+            ##結果をファイルに記録##
+            File.open(result2,"a") do |fo|
+                fo.puts <<-EOS
+日時：#{start_time.strftime("%Y年%m月%d日　%H時%M分")}
+モード:テスト
+問題数：#{number}
+時間: #{time.round(1)} 秒
+得点: #{score}点
+                EOS
+                if miss.empty? 
+                    fo.puts "全問正解"
+                else
+                    fo.puts "間違った単語"
+                    miss.each do |key, value|
+                        fo.puts "#{key} : #{value}"
+                    end
+                end
+                fo.puts "----------------------------------------------"
+            end
+
+
 
             while true
                 partition
@@ -386,6 +482,7 @@ when 2
             end
 
             if replay == 2
+                partition
                 puts "では、プログラムを終了します. お疲れ様でした！"
                 break
             end
@@ -395,155 +492,3 @@ when 2
     end
 
 end
-
-
-
-##ターミナル上で単語を追加##
-=begin
-puts ""
-puts "単語リストに単語を追加しますか？"
-question
-input = gets.to_i
-if input == 1
-    while true
-        puts ""
-        puts "例のように入力してください(例)りんご,apple"
-        input_word = gets
-        puts <<-EOS
-
-これで追加しますか？"
-#{input_word}
-        EOS
-        question
-        add = gets.to_i
-        if add == 1
-            File.open(filename,"a") do |fo|
-                fo.puts "#{input_word}"
-            end
-        else
-            puts ""
-            puts "もう一度追加しますか？"
-            question
-            input2 = gets.to_i
-            if input2 == 2
-                break
-            end
-        end
-    end
-end
-
-
-##ファイル読み込み##
-File.open(filename,"r") do |fp|
-    fp.gets
-    fp.each_line do |line|
-        line.chomp!
-        c = line.split(",")
-        words[c[0]] = c[1]
-    end
-end
-
-
-##ハッシュとキーを入れ替え##
-if mode == 3 or mode == 4
-    words = words.invert
-end
-
-sleep(1)
-puts "単語テストを始めます"
-sleep(1)
-puts "全部で#{words.size}問です"
-sleep(1)
-puts <<-EOS
-3秒後にテストを開始します
-
-3
-EOS
-sleep (1)
-puts "2"
-sleep (1)
-puts "1"
-sleep (1)
-puts <<-EOS
---------------------------------------------------
-テスト開始
---------------------------------------------------
-EOS
-
-start_time = Time.now # 開始時間
-
-
-##問題部分##
-words.each do |key, value|
-    puts ""
-    puts key
-    if value == gets.chomp!
-        score += 100/words.size
-        puts ""
-        puts "正解"
-    else
-        puts <<-EOS
-
-不正解
-ただしくは#{value}です
-        EOS
-        miss[key] = value
-    end
-end
-
-end_time = Time.now # 終了時刻
-
-puts <<-EOS
-
-終了
-EOS
-
-
-##経過時間##
-time = end_time - start_time
-
-#ミスなしなら100点
-if miss.empty?
-    score = 100
-end
-
-##結果表示、間違った単語一覧##
-puts <<-EOS
-
-* 結果 *
-タイム：#{time.round(1)}秒 
-スコア：#{score}点
-あなたが間違えた単語
-
-EOS
-if miss.empty? 
-    puts "ありません。全問正解！"
-else
-    puts "間違った単語"
-    miss.each do |key, value|
-        puts "#{key} : #{value}"
-    end
-end
-
-
-##結果をファイルに記録##
-File.open(result,"a") do |fo|
-    fo.puts <<-EOS
-日時：#{start_time}
-モード:#{modes[mode-1]}
-問題数：#{words.size}
-時間: #{time} 秒
-得点: #{score}点
-    EOS
-    if miss.empty? 
-        fo.puts "全問正解"
-    else
-        fo.puts "間違った単語"
-        miss.each do |key, value|
-            fo.puts "#{key} : #{value}"
-        end
-    end
-    fo.puts "----------------------------------------------"
-end
-
-=end
