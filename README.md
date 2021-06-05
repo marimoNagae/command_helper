@@ -27,8 +27,8 @@ command helper is a Linux command learning tool (in Japanese).
   
 - 1のコマンド追加モードでは、2の練習モードで使用するコマンド辞書にコマンドを追加することができます.　　
 - 2の練習モードにはタイピングモードとテストモードがあります.  
-  -タイピングモードでは、コマンドのタイピング練習ができます.  
-  -テストモードでは、コマンドの説明文に合うコマンドを入力するテストが受けられます.  
+  - タイピングモードでは、コマンドのタイピング練習ができます.  
+  - テストモードでは、コマンドの説明文に合うコマンドを入力するテストが受けられます.  
   
   
 Run 'ruby ch_app.ruby' in a terminal (Ubuntu recommended: if the character encoding is utf-8, you can use it.  
@@ -41,8 +41,8 @@ Mode list:
   
 - In the Add Command mode, you can add commands to the command dictionary used in the Practice mode.　　
 - The two practice modes are the typing mode and the test mode.  
-  -In the typing mode, you can practice typing the commands.  
-  -In test mode, you can take a test to type a command that matches the description of the command.  
+  - In the typing mode, you can practice typing the commands.  
+  - In test mode, you can take a test to type a command that matches the description of the command.  
 
 
 # License
