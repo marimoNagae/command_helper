@@ -142,8 +142,18 @@ when 1 #コマンド追加モード
     while true
         
         sleep 1
-        puts "例のように入力してください.　(例)cd,ディレクトリ（フォルダ）を移動する."
-        input_word = gets.chomp
+        while true
+            partition
+            puts "例のように入力してください.　(例)cd,ディレクトリ（フォルダ）を移動する."
+            input_word = gets.chomp!
+            if input_word.empty? == true
+                partition
+                puts "入力がありません. 正しく入力してください."
+                puts "コマンドの追加を中止する場合は、ctrl+Cでプログラムを強制終了してください."
+            else
+                break
+            end
+        end
         
         while true
             partition
