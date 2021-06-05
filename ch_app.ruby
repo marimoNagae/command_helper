@@ -137,7 +137,7 @@ when 1 #コマンド追加モード
         stay = gets
     end
     partition
-    puts "では、新しいコマンドを辞書に登録します."
+    puts "では、新しいコマンドを辞書に登録します. 追加をやめるときはCtrl＋Cでプログラムを終了してください."
     puts
     while true
         
