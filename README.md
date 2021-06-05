@@ -6,6 +6,7 @@ command helperは、Linuxコマンドの学習ツールです.
 - result1.log  -->タイピングモードの点数などの記録を保存するファイルです。
 - result2.log  -->テストモードの点数などの記録を保存するファイルです.
   
+  
 command helper is a Linux command learning tool (in Japanese). 
   
 - ch_app.ruby -->command helper itself.  
@@ -31,6 +32,7 @@ command helper is a Linux command learning tool (in Japanese).
   - テストモードでは、コマンドの説明文に合うコマンドを入力するテストが受けられます.  
   
   
+    
 Run 'ruby ch_app.ruby' in a terminal (Ubuntu recommended: if the character encoding is utf-8, you can use it.  
   
 Mode list:  
